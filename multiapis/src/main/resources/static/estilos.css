@@ -1,0 +1,104 @@
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 30px;
+    font-family: Arial, sans-serif;
+    background-color: #f1f5f9;
+    color: #1e293b;
+}
+
+h1 {
+    text-align: center;
+    color: #2563eb;
+}
+
+body > p {
+    text-align: center;
+}
+
+button {
+    padding: 10px 18px;
+    margin: 5px;
+    border: none;
+    border-radius: 8px;
+    background-color: #2563eb;
+    color: white;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+button:hover {
+    background-color: #1d4ed8;
+}
+
+#btnRick,
+#btnPokemon {
+    display: inline-block;
+}
+
+body > button {
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+hr {
+    border: none;
+    border-top: 1px solid #cbd5e1;
+    margin: 25px 0;
+}
+
+#titulo {
+    text-align: center;
+}
+
+#busqueda {
+    display: block;
+    width: 100%;
+    max-width: 450px;
+    margin: 15px auto;
+    padding: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+#btnBuscar {
+    display: block;
+    margin: 10px auto 25px;
+}
+
+#resultados {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 18px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+#resultados > div {
+    padding: 18px;
+    text-align: center;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+}
+
+#resultados img {
+    max-width: 100%;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+#resultados h3 {
+    color: #2563eb;
+    text-transform: capitalize;
+}
+
+#resultados p {
+    color: #475569;
+}
