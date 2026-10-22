@@ -1,6 +1,5 @@
 // --- 1. SELECCIÓN DE ELEMENTOS DEL DOM ---
 const btnRick = document.getElementById("btnRick");
-const btnPokemon = document.getElementById("btnPokemon");
 const btnBuscar = document.getElementById("btnBuscar");
 
 const titulo = document.getElementById("titulo");
@@ -8,19 +7,15 @@ const busqueda = document.getElementById("busqueda");
 const resultados = document.getElementById("resultados");
 
 // --- VARIABLES DE ESTADO Y PAGINACIÓN ---
-let apiActual = "rick";          // Controla qué API está activa actualmente ("rick" o "pokemon").
 let paginaRick = 1;              // Página actual para Rick y Morty.
-let paginaPokemon = 0;           // Página actual para Pokémon.
 const tarjetasPorPagina = 12;    // Cantidad de elementos a mostrar por página en el front.
-let pokemonesCargados = [];
 let temporizador;                // Variable para el control del retraso en la búsqueda (debounce).
 
 // --- CONFIGURACIÓN DE EVENTOS ---
 btnRick.addEventListener("click", cargarRick);
-btnPokemon.addEventListener("click", cargarPokemon);
 btnBuscar.addEventListener("click", buscar);
 
-// Evento de entrada en el buscador con temporizador (Debounce de 4 segundos) para optimizar peticiones.
+// Evento de entrada en el buscador con temporizador (Debounce de 4 segundos)
 busqueda.addEventListener("input", function () {
     clearTimeout(temporizador);
 
@@ -34,7 +29,6 @@ busqueda.addEventListener("input", function () {
 
 // --- 2. GESTIÓN DE RICK Y MORTY ---
 async function cargarRick() {
-    apiActual = "rick";
     paginaRick = 0;
     titulo.textContent = "Personajes de Rick y Morty";
     busqueda.placeholder = "Buscar personaje...";
@@ -108,74 +102,7 @@ async function mostrarPaginaRick() {
 }
 
 
-// --- 3. GESTIÓN DE POKÉMON ---
-async function cargarPokemon() {
-    apiActual = "pokemon";
-    paginaPokemon = 0;
-    titulo.textContent = "Pokémon";
-    busqueda.placeholder = "Buscar Pokémon...";
-    busqueda.value = "";
-
-    const respuesta = await fetch("/api/pokemon/lista");
-    const datos = await respuesta.json();
-
-    pokemonesCargados = datos.results;
-
-    await mostrarPaginaPokemon();
-}
-
-async function mostrarPaginaPokemon() {
-    resultados.innerHTML = "<p>Cargando Pokémon...</p>";
-
-    try {
-        const inicio = paginaPokemon * tarjetasPorPagina;
-
-        // Solicita una lista paginada al backend de Pokémon
-        const respuesta = await fetch(
-            "/api/pokemon/lista?inicio=" + inicio +
-            "&cantidad=" + tarjetasPorPagina
-        );
-
-        const datos = await respuesta.json();
-
-        // Promise.all permite hacer múltiples peticiones en paralelo para obtener el detalle de cada Pokémon
-        const pokemones = await Promise.all(
-            datos.results.map(async (pokemon) => {
-                const respuestaPokemon = await fetch(
-                    "/api/pokemon/" + encodeURIComponent(pokemon.name)
-                );
-
-                if (!respuestaPokemon.ok) {
-                    throw new Error("Error al cargar Pokémon");
-                }
-
-                return await respuestaPokemon.json();
-            })
-        );
-
-        mostrarPokemon(pokemones);
-
-        agregarPaginacion(
-            paginaPokemon > 0,
-            inicio + datos.results.length < datos.count,
-            () => {
-                paginaPokemon--;
-                mostrarPaginaPokemon();
-            },
-            () => {
-                paginaPokemon++;
-                mostrarPaginaPokemon();
-            }
-        );
-
-    } catch (error) {
-        resultados.innerHTML =
-            "<p>No se pudieron cargar los Pokémon. Intenta nuevamente.</p>";
-    }
-}
-
-
-// --- 4. FUNCIÓN GLOBAL DE BÚSQUEDA ---
+// --- 3. FUNCIÓN DE BÚSQUEDA ---
 async function buscar() {
     const nombre = busqueda.value.trim();
 
@@ -187,31 +114,20 @@ async function buscar() {
     resultados.innerHTML = "<p>Buscando...</p>";
 
     try {
-        if (apiActual === "rick") {
-            // Búsqueda en el backend de Rick y Morty
-            const respuesta = await fetch(
-                "/api/rickandmorty/buscar?nombre=" +
-                encodeURIComponent(nombre)
-            );
+        const respuesta = await fetch(
+            "/api/rickandmorty/buscar?nombre=" +
+            encodeURIComponent(nombre)
+        );
 
-            const datos = await respuesta.json();
-            mostrarRick(datos.results);
-        } else {
-            // Búsqueda en el backend de Pokémon
-            const respuesta = await fetch(
-                "/api/pokemon/" + encodeURIComponent(nombre.toLowerCase())
-            );
-
-            const pokemon = await respuesta.json();
-            mostrarPokemon([pokemon]);
-        }
+        const datos = await respuesta.json();
+        mostrarRick(datos.results);
     } catch (error) {
         resultados.innerHTML = "<p>No se encontraron resultados.</p>";
     }
 }
 
 
-// --- 5. RENDERIZADO EN PANTALLA (HTML DINÁMICO) ---
+// --- 4. RENDERIZADO EN PANTALLA ---
 function mostrarRick(personajes) {
     resultados.innerHTML = "";
 
@@ -234,33 +150,8 @@ function mostrarRick(personajes) {
         `;
     });
 }
-
-function mostrarPokemon(pokemones) {
-    resultados.innerHTML = "";
-
-    pokemones.forEach(pokemon => {
-        const imagen = pokemon.image ||
-            pokemon.sprites?.front_default;
-
-        resultados.innerHTML += `
-            <div>
-                <img src="${imagen || ""}" width="120">
-                <h3>${pokemon.name}</h3>
-                <p>Número: ${pokemon.id}</p>
-                <p>Altura: ${pokemon.height}</p>
-                <p>Peso: ${pokemon.weight}</p>
-                <button onclick="verDetallePokemon('${pokemon.name}')">
-                    Ver detalles
-                </button>
-            </div>
-            <hr>
-        `;
-    });
-}
-
-
 // --- 6. VISTAS DE DETALLE INDIVIDUAL ---
-async function verDetalleRick(id) {
+/*async function verDetalleRick(id) {
     try {
         const respuesta = await fetch(
             "/api/rickandmorty/personaje/" + id
@@ -285,39 +176,57 @@ async function verDetalleRick(id) {
             "<p>No se pudieron cargar los detalles.</p>";
     }
 }
+    */
 
-async function verDetallePokemon(nombre) {
+// --- 5. VISTA DE DETALLE (CON ENDPOINT ANIDADO Y ENCADENAMIENTO) ---
+async function verDetalleRick(id) {
     try {
-        const respuesta = await fetch(
-            "/api/pokemon/" + encodeURIComponent(nombre)
-        );
+        // 1. Primera petición: Obtenemos el personaje (Endpoint principal)
+        const respuesta = await fetch("/api/rickandmorty/personaje/" + id);
+        const personaje = await respuesta.json();
 
-        const pokemon = await respuesta.json();
+        // 2. ENDPOINT ANIDADO Y ENCADENAMIENTO:
+        // Tomamos los primeros 3 episodios del arreglo de URLs que trae el personaje
+        const urlsEpisodios = personaje.episode.slice(0, 3); 
 
-        const tipos = pokemon.types
-            .map(tipo => tipo.type.name)
-            .join(", ");
+        // Hacemos un fetch a cada URL anidada en paralelo usando Promise.all
+        const peticionesEpisodios = urlsEpisodios.map(async (urlEpisodio) => {
+            const resEp = await fetch(urlEpisodio);
+            return await resEp.json();
+        });
 
+        const episodios = await Promise.all(peticionesEpisodios);
+
+        // Convertimos los episodios en una lista de HTML
+        const listaEpisodiosHTML = episodios.map(ep => 
+            `<li>${ep.name} (${ep.episode})</li>`
+        ).join("");
+
+        // 3. PINTAR EN LA WEB
         resultados.innerHTML = `
             <div>
-                <button onclick="cargarPokemon()">Volver</button>
-                <img src="${pokemon.sprites.front_default || ""}" width="180">
-                <h2>${pokemon.name}</h2>
-                <p>Número: ${pokemon.id}</p>
-                <p>Tipos: ${tipos}</p>
-                <p>Altura: ${pokemon.height}</p>
-                <p>Peso: ${pokemon.weight}</p>
-                <p>Experiencia base: ${pokemon.base_experience ?? "No disponible"}</p>
+                <button onclick="cargarRick()">Volver</button>
+                <img src="${personaje.image}" width="180">
+                <h2>${personaje.name}</h2>
+                <p>Estado: ${personaje.status}</p>
+                <p>Especie: ${personaje.species}</p>
+                <p>Género: ${personaje.gender}</p>
+                <p>Origen: ${personaje.origin.name}</p>
+                <hr>
+                <h3>Episodios (Datos Anidados y Encadenados):</h3>
+                <ul>
+                    ${listaEpisodiosHTML}
+                </ul>
             </div>
         `;
     } catch (error) {
         resultados.innerHTML =
-            "<p>No se pudieron cargar los detalles del Pokémon.</p>";
+            "<p>No se pudieron cargar los detalles y los episodios.</p>";
     }
 }
 
 
-// --- 7. COMPONENTE REUTILIZABLE DE PAGINACIÓN ---
+// --- 6. COMPONENTE REUTILIZABLE DE PAGINACIÓN ---
 function agregarPaginacion(puedeAnterior, puedeSiguiente, anterior, siguiente) {
     const controles = document.createElement("div");
 
@@ -341,3 +250,6 @@ function agregarPaginacion(puedeAnterior, puedeSiguiente, anterior, siguiente) {
     document.getElementById("btnAnterior").addEventListener("click", anterior);
     document.getElementById("btnSiguiente").addEventListener("click", siguiente);
 }
+
+
+
