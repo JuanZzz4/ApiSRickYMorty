@@ -6,7 +6,7 @@ Aplicación Web Full-Stack desarrollada como un sistema intermediario (**Proxy /
 
 ## 🛠️ Tecnologías Utilizadas
 
-* **Backend:** Java 17+, Spring Boot (Web, REST Controllers), Java `HttpClient`.
+* **Backend:** Java 21+, Spring Boot (Web, REST Controllers), Java `HttpClient`.
 * **Frontend:** HTML5, CSS3, JavaScript Asíncrono (`async/await`, `fetch`, `Promise.all`).
 * **Herramientas de construcción:** Maven.
 * **Fuente de datos externa:** [Rick and Morty API](https://rickandmortyapi.com/).
