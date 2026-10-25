@@ -8,25 +8,26 @@
 </head>
 <body>
 
-    <h1>Explorador de Rick y Morty</h1>
+    <header class="cabecera">
+        <h1>Explorador de Rick y Morty</h1>
+        <p>Haz clic en el botón para cargar los personajes</p>
+        <button id="btnRick">Cargar Personajes</button>
+    </header>
 
-    <p>Haz clic en el botón para cargar los personajes:</p>
+    <main>
+        <h2 id="titulo">Bienvenido</h2>
 
-    <button id="btnRick">Cargar Personajes</button>
+        <div class="buscador">
+            <input
+                    type="text"
+                    id="busqueda"
+                    placeholder="Escribe un nombre de personaje..."
+            >
+            <button id="btnBuscar">Buscar</button>
+        </div>
 
-    <hr>
-
-    <h2 id="titulo">Bienvenido</h2>
-
-    <input
-            type="text"
-            id="busqueda"
-            placeholder="Escribe un nombre de personaje..."
-    >
-
-    <button id="btnBuscar">Buscar</button>
-
-    <div id="resultados"></div>
+        <div id="resultados"></div>
+    </main>
 
     <script src="app.js"></script>
 
