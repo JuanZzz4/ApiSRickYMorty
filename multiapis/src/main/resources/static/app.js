@@ -15,6 +15,13 @@ let temporizador;                // Variable para el control del retraso en la b
 btnRick.addEventListener("click", cargarRick);
 btnBuscar.addEventListener("click", buscar);
 
+busqueda.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") {
+        clearTimeout(temporizador);
+        buscar();
+    }
+});
+
 // Evento de entrada en el buscador con temporizador (Debounce de 4 segundos)
 busqueda.addEventListener("input", function () {
     clearTimeout(temporizador);
@@ -29,7 +36,7 @@ busqueda.addEventListener("input", function () {
 
 // --- 2. GESTIÓN DE RICK Y MORTY ---
 async function cargarRick() {
-    paginaRick = 0;
+    paginaRick = 1;
     titulo.textContent = "Personajes de Rick y Morty";
     busqueda.placeholder = "Buscar personaje...";
     busqueda.value = "";
@@ -138,14 +145,16 @@ function mostrarRick(personajes) {
 
     personajes.forEach(personaje => {
         resultados.innerHTML += `
-            <div>
-                <img src="${personaje.image}" width="120">
-                <h3>${personaje.name}</h3>
-                <p>Estado: ${personaje.status}</p>
-                <p>Especie: ${personaje.species}</p>
-                <button onclick="verDetalleRick(${personaje.id})">
-                    Ver detalles
-                </button>
+            <div class="tarjeta">
+                <img src="${personaje.image}" alt="${personaje.name}" loading="lazy">
+                <div class="tarjeta-info">
+                    <h3>${personaje.name}</h3>
+                    <p class="estado ${personaje.status.toLowerCase()}">${personaje.status}</p>
+                    <p>${personaje.species}</p>
+                    <button onclick="verDetalleRick(${personaje.id})">
+                        Ver detalles
+                    </button>
+                </div>
             </div>
         `;
     });
@@ -204,19 +213,21 @@ async function verDetalleRick(id) {
 
         // 3. PINTAR EN LA WEB
         resultados.innerHTML = `
-            <div>
-                <button onclick="cargarRick()">Volver</button>
-                <img src="${personaje.image}" width="180">
-                <h2>${personaje.name}</h2>
-                <p>Estado: ${personaje.status}</p>
-                <p>Especie: ${personaje.species}</p>
-                <p>Género: ${personaje.gender}</p>
-                <p>Origen: ${personaje.origin.name}</p>
-                <hr>
-                <h3>Episodios (Datos Anidados y Encadenados):</h3>
-                <ul>
-                    ${listaEpisodiosHTML}
-                </ul>
+            <div class="detalle">
+                <img src="${personaje.image}" alt="${personaje.name}">
+                <div>
+                    <button class="volver" onclick="cargarRick()">← Volver</button>
+                    <h2>${personaje.name}</h2>
+                    <p class="estado ${personaje.status.toLowerCase()}">${personaje.status}</p>
+                    <p>Especie: ${personaje.species}</p>
+                    <p>Género: ${personaje.gender}</p>
+                    <p>Origen: ${personaje.origin.name}</p>
+                    <hr>
+                    <h3>Episodios (Datos Anidados y Encadenados)</h3>
+                    <ul>
+                        ${listaEpisodiosHTML}
+                    </ul>
+                </div>
             </div>
         `;
     } catch (error) {
@@ -230,18 +241,14 @@ async function verDetalleRick(id) {
 function agregarPaginacion(puedeAnterior, puedeSiguiente, anterior, siguiente) {
     const controles = document.createElement("div");
 
-    controles.style.gridColumn = "1 / -1";
-    controles.style.display = "flex";
-    controles.style.justifyContent = "center";
-    controles.style.gap = "12px";
-    controles.style.margin = "20px";
+    controles.className = "paginacion";
 
     controles.innerHTML = `
         <button id="btnAnterior" ${puedeAnterior ? "" : "disabled"}>
-            Anterior
+            ← Anterior
         </button>
         <button id="btnSiguiente" ${puedeSiguiente ? "" : "disabled"}>
-            Siguiente
+            Siguiente →
         </button>
     `;
 
