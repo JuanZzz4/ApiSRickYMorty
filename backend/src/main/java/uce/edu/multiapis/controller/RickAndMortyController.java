@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
+
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -12,6 +13,7 @@ import java.net.http.HttpResponse;
 @RestController // Define la clase como un controlador REST que responderá con datos (JSON) directamente al cliente.
 @RequestMapping("/api/rickandmorty") // Establece la ruta base; todas las URLs de este controlador comienzan con /api/rickandmorty.
 public class RickAndMortyController {
+        
 
     // Instancia de HttpClient para realizar peticiones HTTP salientes hacia la API de Rick y Morty.
     private final HttpClient httpClient = HttpClient.newHttpClient();
