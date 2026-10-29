@@ -2,14 +2,18 @@ version: '3.8'
 
 services:
   backend:
-    build: ./backend
+    build: 
+      context: ./backend    # Ruta de la carpeta del backend
+      dockerfile: Dockerfile # Nombre del archivo dentro de esa carpeta
     container_name: backend-spring
     ports:
       - "8080:8080"
     restart: always
 
   frontend:
-    build: ./frontend
+    build: 
+      context: ./frontend    # Ruta de la carpeta del frontend
+      dockerfile: Dockerfile # Nombre del archivo dentro de esa carpeta
     container_name: frontend-web
     ports:
       - "80:80"
