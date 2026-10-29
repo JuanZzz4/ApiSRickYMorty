@@ -1,21 +1,26 @@
-version: '3.8'
-
 services:
   backend:
-    build: ./backend
+    build:
+      context: ./backend
     container_name: backend-spring
     ports:
       - "8080:8080"
-    restart: always
+    restart: unless-stopped
+    networks:
+      - rickmorty-net
 
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
     container_name: frontend-web
     ports:
       - "80:80"
-    restart: always
     depends_on:
       - backend
+    restart: unless-stopped
+    networks:
+      - rickmorty-net
 
-
-      
+networks:
+  rickmorty-net:
+    driver: bridge

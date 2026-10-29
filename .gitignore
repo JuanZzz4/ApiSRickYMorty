@@ -1,0 +1,13 @@
+# Compilados
+target/
+**/target/
+
+# IDEs
+.idea/
+*.iml
+.vscode/*
+!.vscode/settings.json
+
+# Sistema
+.DS_Store
+Thumbs.db

@@ -1,3 +1,10 @@
+// --- 0. URL BASE DE LA API ---
+// En Docker/EC2 Nginx sirve el front y hace proxy de /api -> backend (mismo origen, puerto 80).
+// En local (Live Server u otro puerto) se llama directo al backend Spring en el 8080.
+const API_BASE = (location.port === "" || location.port === "80")
+    ? ""
+    : "http://localhost:8080";
+
 // --- 1. SELECCIÓN DE ELEMENTOS DEL DOM ---
 const btnRick = document.getElementById("btnRick");
 const btnBuscar = document.getElementById("btnBuscar");
@@ -54,7 +61,7 @@ async function mostrarPaginaRick() {
 
         // Petición al backend de Spring Boot para Rick y Morty
         const respuesta = await fetch(
-            "/api/rickandmorty/personajes?pagina=" + paginaApi
+            API_BASE + "/api/rickandmorty/personajes?pagina=" + paginaApi
         );
 
         if (!respuesta.ok) {
@@ -71,7 +78,7 @@ async function mostrarPaginaRick() {
         // Lógica para completar elementos si la página cruza el límite de la API externa
         if (personajes.length < tarjetasPorPagina && datos.info.next) {
             const respuestaSiguiente = await fetch(
-                "/api/rickandmorty/personajes?pagina=" + (paginaApi + 1)
+                API_BASE + "/api/rickandmorty/personajes?pagina=" + (paginaApi + 1)
             );
 
             if (respuestaSiguiente.ok) {
@@ -122,7 +129,7 @@ async function buscar() {
 
     try {
         const respuesta = await fetch(
-            "/api/rickandmorty/buscar?nombre=" +
+            API_BASE + "/api/rickandmorty/buscar?nombre=" +
             encodeURIComponent(nombre)
         );
 
@@ -163,7 +170,7 @@ function mostrarRick(personajes) {
 /*async function verDetalleRick(id) {
     try {
         const respuesta = await fetch(
-            "/api/rickandmorty/personaje/" + id
+            API_BASE + "/api/rickandmorty/personaje/" + id
         );
 
         const personaje = await respuesta.json();
@@ -191,7 +198,7 @@ function mostrarRick(personajes) {
 async function verDetalleRick(id) {
     try {
         // 1. Primera petición: Obtenemos el personaje (Endpoint principal)
-        const respuesta = await fetch("/api/rickandmorty/personaje/" + id);
+        const respuesta = await fetch(API_BASE + "/api/rickandmorty/personaje/" + id);
         const personaje = await respuesta.json();
 
         // 2. ENDPOINT ANIDADO Y ENCADENAMIENTO:

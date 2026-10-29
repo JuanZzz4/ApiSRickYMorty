@@ -38,19 +38,33 @@ La aplicación implementa una arquitectura desacoplada donde el servidor de Spri
 ## 📂 Estructura del Proyecto
 
 ```text
-multiapis/
-│
-├── src/
-│   ├── main/
-│   │   ├── java/uce/edu/multiapis/
-│   │   │   ├── controller/
-│   │   │   │   └── RickAndMortyController.java  # Controlador REST y cliente HTTP
-│   │   │   └── MultiapisApplication.java        # Clase principal de arranque Spring Boot
-│   │   │
-│   │   └── resources/
-│   │       └── static/                          # Archivos estáticos del Frontend
-│   │           ├── index.html                   # Interfaz de usuario principal
-│   │           ├── app.js                       # Lógica de consumo fetch, DOM y Promise.all
-│   │           └── estilos.css                  # Hoja de estilos de la aplicación
-│   │
-└── pom.xml                                      # Dependencias y configuración de Maven
+rick-and-morty-monorepo/
+├── docker-compose.yml          # Orquesta backend + frontend
+├── backend/                    # Spring Boot (Java 21)
+│   ├── Dockerfile              # Build multi-etapa (compila el JAR dentro de Docker)
+│   ├── pom.xml
+│   └── src/main/java/uce/edu/multiapis/
+│       ├── MultiapisApplication.java
+│       ├── config/CorsConfig.java
+│       └── controller/RickAndMortyController.java
+└── frontend/                   # HTML/CSS/JS servido por Nginx
+    ├── Dockerfile
+    ├── default.conf            # Nginx: sirve estáticos y hace proxy de /api -> backend:8080
+    ├── index.html
+    ├── app.js
+    └── estilos.css
+```
+
+## ▶️ Ejecución
+
+### Con Docker (local o EC2)
+```bash
+docker compose up -d --build
+```
+Abre `http://localhost` (o `http://IP_PUBLICA_EC2`). En EC2 el Security Group debe permitir el puerto **80** de entrada.
+
+### Local sin Docker (VS Code)
+```bash
+cd backend && ./mvnw spring-boot:run      # API en http://localhost:8080
+```
+Luego abre `frontend/index.html` con la extensión Live Server (el front detecta el puerto y llama a `localhost:8080`).
